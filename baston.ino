@@ -1,5 +1,72 @@
-// defines pins numbers
-const int trigPin = 5;
+// defines pins numbers#include <SoftwareSerial.h>
+SoftwareSerial BTSerial(2, 3);
+# define entrada 4
+# define audio 12
+#define Pecho 6
+#define Ptrig 7
+#define MOTOR 13
+long duracion, distancia;
+
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(Pecho, INPUT);
+  pinMode(Ptrig, OUTPUT);
+  pinMode(MOTOR, OUTPUT);
+
+
+   Serial.begin(9600);
+  BTSerial.begin(9600);
+
+  pinMode (entrada, INPUT);
+  pinMode (audio, OUTPUT);
+}
+
+void loop()
+{
+  digitalWrite(Ptrig, LOW);
+  delayMicroseconds(2);
+  digitalWrite(Ptrig, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(Ptrig, LOW);
+
+  duracion = pulseIn(Pecho,HIGH);
+  distancia = (duracion/2)/29;
+
+  if(distancia >= 500 || distancia <=0)
+  {
+    Serial.print("---");
+  }
+  else
+  {
+    Serial.print(distancia);
+    Serial.println("cm");
+    digitalWrite(MOTOR, 0);  
+  }
+
+  if(distancia<=80 && distancia >= 0)
+  {
+    digitalWrite(MOTOR, 1);
+    //Serial.println("Alarma.....");
+  }
+  delay(400);
+  
+  int v_entrada = digitalRead(entrada);
+  
+  if (BTSerial.available()) {
+    char Mensaje = BTSerial.read();
+    if (Mensaje == 'A') {
+       tone(audio, 300 );
+      Serial.println("Encender alarma");
+    }
+    else if (Mensaje == 'B')
+    {
+       noTone(audio);
+      Serial.println("Apagar alarma");
+    }
+  }
+  
+} = 5;
 const int echoPin = 4;
 int button = 10;
 int state = 0; 
